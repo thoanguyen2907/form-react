@@ -7,10 +7,15 @@ export const actListQuestions = (questions) => {
 		questions
 	}
 }
-export const actFormSubmit = (feedback,rating) => {
+export const actFormSubmit = (feebacks) => {
 	return {
 		type : types.SUBMIT,
-        feedback,
-        rating
+        feebacks,
+	}
+}
+export const actClearForm = () => {
+	return {
+		type : types.CLEAR_FORM,
+        
 	}
 }

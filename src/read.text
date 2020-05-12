@@ -1,0 +1,114 @@
+import React, {Component} from 'react';
+import StarRatings from 'react-star-ratings';
+import './form.css';
+import {connect} from 'react-redux';
+import Questions from './questions';
+import ReactStars from 'react-stars'
+class form extends Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+        index: 0,
+        feedback: this.props.questions.map(q => {return {}})
+      }
+  }
+  onSubmit =(event)=> {
+      event.preventDefault();
+      let {feedback, rating} = this.state; 
+      this.props.onSubmit(feedback, rating);
+      }
+  ratingChanged = ( newRating ) => {
+      var feedback = this.state.feedback;
+      feedback[this.state.index].rating = newRating;
+        this.setState({
+          feedback: feedback
+        });
+      }
+    
+  handleChange = (e) => {
+    var feedback = this.state.feedback;
+    feedback[this.state.index][e.target.name] = e.target.value;
+      this.setState({
+        feedback: feedback
+      });
+  }
+
+  togglePrev = ()  => {
+    if(this.state.index - 1 >= 0){
+      this.setState({
+        index: this.state.index - 1
+      });
+    }
+  }
+  toggleNext = () => {
+    if(this.state.index + 1 < this.props.questions.length){
+      this.setState({
+        index: this.state.index + 1
+      });
+    }
+   }
+    
+  render(){
+    console.log(this.state.index);
+    console.log(this.props.questions)
+      return (
+      <div className="container">
+      <div>
+        <Prev toggle={this.togglePrev} />
+        <Next toggle={this.toggleNext} />
+      </div>
+      <form onSubmit={this.onSubmit} id="myForm">
+          <Questions question = {this.props.questions[this.state.index]}/>
+          <div id="content" className="feedback">
+            <div className="title white"> Chấm điểm</div>
+              <ReactStars
+                  count={10}
+                  name="rating"
+                  value = {this.state.feedback[this.state.index].rating || 0}
+                  onChange={this.ratingChanged}
+                  size={40}
+                  color2={'#ffd700'}
+              />
+            </div>           
+  
+        <div id="content" className="feedback">
+            <div className="title white"> Nhận xét chi tiết</div>
+            <div className="question">
+            <input className="text-line" type="text" placeholder="Your answer" name="txtMessage"
+              value={this.state.feedback[this.state.index].txtMessage || ""}
+              onChange={this.handleChange}
+            />
+            </div>           
+        </div>
+        <Prev toggle={this.togglePrev} />
+        <Next toggle={this.toggleNext} />
+        {this.state.index === this.props.questions.length - 1 ? 
+          <input type="submit" value="Gửi" />
+        :""
+        }
+      </form>
+      </div>
+      );
+}
+
+}
+
+const mapStateToProps = state => {
+  return {
+    questions : state.questions
+    }
+}
+
+export default connect(mapStateToProps, null) (form);
+
+function Prev(props) {
+  return (
+    <button type="button" className="btn" onClick={props.toggle}>Previous</button>
+  );
+}
+
+function Next(props) {
+  return (
+    <button type="button" className="btn" onClick={props.toggle}>Next</button>
+  );
+}

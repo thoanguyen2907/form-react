@@ -31,7 +31,7 @@ class Form extends Component {
       }
     render() {
         let {profile} = this.props;
-        console.log(profile);
+
         return (
             <div className="container">
             <form onSubmit={this.handleSubmit}>
